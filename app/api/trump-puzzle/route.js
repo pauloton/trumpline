@@ -166,35 +166,6 @@ const PUZZLES = {
 
 };
 
-  tw001: {
-    theme: "The Rise",
-    events: [
-      { id: 1, title: "Trump descends the Trump Tower escalator to announce his presidential run", hint: "Called Mexican immigrants 'rapists'", year: 2015 },
-      { id: 2, title: "Trump says John McCain is 'not a war hero — I like people who weren't captured'", hint: "Iowa Family Leadership Summit", year: 2015 },
-      { id: 3, title: "Trump calls for 'total and complete shutdown of Muslims entering the United States'", hint: "A day that will live in infamy", year: 2015 },
-      { id: 4, title: "Access Hollywood tape leaked: Trump caught saying 'grab 'em by the p****'", hint: "Billy Bush. A bus. A mic.", year: 2016 },
-      { id: 5, title: "Trump refuses to commit to accepting the election results at the final debate", hint: "Clinton called it 'horrifying'", year: 2016 },
-      { id: 6, title: "Trump wins the 2016 presidential election, shocking the world", hint: "The night the pundits got it very wrong", year: 2016 },
-      { id: 7, title: "Trump settles Trump University fraud lawsuit for $25 million", hint: "No admission of wrongdoing, naturally", year: 2016 },
-    ],
-  },
-
-  tw002: {
-    theme: "First Year Firings",
-    events: [
-      { id: 1, title: "Trump signs the Muslim travel ban — chaos erupts at airports across America", hint: "Day 7 of presidency", year: 2017 },
-      { id: 2, title: "Michael Flynn resigns as National Security Advisor after just 24 days on the job", hint: "Lied to the VP about Russia calls", year: 2017 },
-      { id: 3, title: "Trump tweets: 'Obama had my phones tapped at Trump Tower before the election'", hint: "Zero evidence ever produced", year: 2017 },
-      { id: 4, title: "Trump fires FBI Director James Comey, citing the 'Russia thing'", hint: "Then told Russian officials in the Oval Office the next day", year: 2017 },
-      { id: 5, title: "Sean Spicer resigns as Press Secretary after Scaramucci is hired over him", hint: "Famous for the inaugural crowd fight", year: 2017 },
-      { id: 6, title: "Anthony Scaramucci fired after just 10 days as Communications Director", hint: "An all-time record even by Trump standards", year: 2017 },
-      { id: 7, title: "Steve Bannon ousted from the White House", hint: "The Breitbart strategist who shaped Trump's rise", year: 2017 },
-    ],
-  },
-
-
-};
-
 // ============================================================
 // SEEDED SHUFFLE (same shuffle for same week, for everyone)
 // ============================================================
