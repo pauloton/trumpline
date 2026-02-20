@@ -554,7 +554,7 @@ function PlayingScreen({ events, lockedCorrect, wrongCards, onReorder, onLockIn,
 
 function ShareIcons({ time }) {
   const { display } = formatTime(time);
-  const msg = "I sorted the Trumple chaos in " + display + " \uD83C\uDDFA\uD83C\uDDF8 Can you? \u2014 trumple.vercel.app";
+  const msg = "Huge win! I solved Trumple in " + display + ". Can you? \u2014 trumple.vercel.app";
   const waUrl = "https://wa.me/?text=" + encodeURIComponent(msg);
   const xUrl  = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(msg);
   const fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent("https://trumple.vercel.app") + "&quote=" + encodeURIComponent(msg);
