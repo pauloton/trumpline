@@ -266,7 +266,7 @@ function IntroScreen({ onStart, puzzle }) {
   });
   const taglines = [
     { text:"Seven Trump Events", size:"1.05rem", weight:600, color:C.dim },
-    { text:"Sort Them",          size:"1.55rem", weight:900, color:C.gold },
+    { text:"Sort Them",          size:"1.05rem", weight:600, color:C.dim },
     { text:"Beat The Clock",     size:"1.05rem", weight:600, color:C.dim },
   ];
 
@@ -333,7 +333,7 @@ function IntroScreen({ onStart, puzzle }) {
         }}
           onMouseEnter={e => e.target.style.transform="scale(1.05)"}
           onMouseLeave={e => e.target.style.transform="scale(1)"}
-        >SORT THE CHAOS</button>
+        >SORT THE CHAOS!</button>
       </div>
     </div>
   );
