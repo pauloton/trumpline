@@ -144,21 +144,21 @@ function seededShuffle(arr, seed) {
 // Season seed, change once per year to refresh the rotation order
 const SEASON = 2025;
 
-function pickForWeek(pool, eraOffset, weekNum) {
+function pickForDay(pool, eraOffset, dayNum) {
   const shuffled = seededShuffle(pool, SEASON * 1000 + eraOffset);
-  return shuffled[weekNum % shuffled.length];
+  return shuffled[dayNum % shuffled.length];
 }
 
-function buildWeeklyPuzzle(weekNum) {
-  const a = pickForWeek(POOL.A, 1, weekNum);
-  const b = pickForWeek(POOL.B, 2, weekNum);
-  const c = pickForWeek(POOL.C, 3, weekNum);
-  const d = pickForWeek(POOL.D, 4, weekNum);
-  const e = pickForWeek(POOL.E, 5, weekNum);
+function buildDailyPuzzle(dayNum) {
+  const a = pickForDay(POOL.A, 1, dayNum);
+  const b = pickForDay(POOL.B, 2, dayNum);
+  const c = pickForDay(POOL.C, 3, dayNum);
+  const d = pickForDay(POOL.D, 4, dayNum);
+  const e = pickForDay(POOL.E, 5, dayNum);
 
   // For F (22 items, 2 needed): offset second pick by half the pool size
-  const f1 = pickForWeek(POOL.F, 6, weekNum);
-  const f2 = pickForWeek(POOL.F, 6, weekNum + Math.floor(POOL.F.length / 2));
+  const f1 = pickForDay(POOL.F, 6, dayNum);
+  const f2 = pickForDay(POOL.F, 6, dayNum + Math.floor(POOL.F.length / 2));
 
   // Sort oldest to newest = correct answer order
   const events = [a, b, c, d, e, f1, f2].sort((x, y) =>
@@ -179,23 +179,16 @@ function buildWeeklyPuzzle(weekNum) {
 // ============================================================
 // ROUTE HANDLER
 // ============================================================
-const EPOCH_MONDAY = new Date("2025-01-20T12:00:00Z"); // Inauguration week = week 0
+const EPOCH_DAY = new Date("2025-01-20T12:00:00Z"); // Inauguration day = day 0
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const dateParam = searchParams.get("date") || new Date().toISOString().split("T")[0];
 
-  function getMondayOf(dateStr) {
-    const d = new Date(dateStr + "T12:00:00Z");
-    const day = d.getUTCDay();
-    d.setUTCDate(d.getUTCDate() - (day === 0 ? 6 : day - 1));
-    return d;
-  }
+  const d = new Date(dateParam + "T12:00:00Z");
+  const dayNum = Math.round((d - EPOCH_DAY) / (24 * 3600 * 1000));
 
-  const weekMonday = getMondayOf(dateParam);
-  const weekNum    = Math.round((weekMonday - EPOCH_MONDAY) / (7 * 24 * 3600 * 1000));
-
-  if (weekNum < 0) {
+  if (dayNum < 0) {
     return NextResponse.json({ error: "No puzzle before launch" }, { status: 404 });
   }
 
@@ -203,16 +196,16 @@ export async function GET(req) {
   // No future event can sneak one through, no matter who edits the pool.
   const clean = (str) => str.replace(/ \u2014 /g, ", ").replace(/\u2014/g, "-");
 
-  const events      = buildWeeklyPuzzle(weekNum);
+  const events      = buildDailyPuzzle(dayNum);
   const answerOrder = events.map(e => e.id);
   const shuffled    = seededShuffle(
     events.map(e => ({ id: e.id, title: clean(e.title), hint: clean(e.hint) })),
-    weekNum * 999983 + 7
+    dayNum * 999983 + 7
   );
   const yearMap     = Object.fromEntries(events.map(e => [e.id, e.year]));
 
   return NextResponse.json({
-    puzzle: { id: "w" + weekNum, weekNum, date: dateParam, events: shuffled },
+    puzzle: { id: "d" + dayNum, dayNum, date: dateParam, events: shuffled },
     answerOrder,
     yearMap,
   });
