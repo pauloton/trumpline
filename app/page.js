@@ -97,7 +97,7 @@ function getCelebWord(stars) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-const SHARE_CTAS = ["Spread the chaos!", "Tell them!", "Pass it on!", "Share with your friends"];
+const SHARE_CTAS = ["Spread the chaos!", "Tell them!", "Pass it on!"];
 const shareCta = SHARE_CTAS[Math.floor(Math.random() * SHARE_CTAS.length)];
 
 function Confetti({ active }) {
@@ -695,7 +695,7 @@ function ShareIcons({ time }) {
         <polyline points="16 6 12 2 8 6"/>
         <line x1="12" y1="2" x2="12" y2="15"/>
       </svg>
-      Share Your Beautiful Score!
+      Share Your Score
     </button>
   );
 }
