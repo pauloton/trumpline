@@ -527,7 +527,16 @@ function GameOverScreen({ events, onViewChain, onMount }) {
         {/* Share your horrible score */}
         <button
           onClick={async () => {
-            const msg = "I failed Trumple today. Can you do better? https://trumple.vercel.app";
+            const LOSER_MSGS = [
+              "I got absolutely crushed by Trumple today. Total disaster. Think you can do better? https://trumple.vercel.app",
+              "Trumple beat me today. Rigged? Very suspicious. Think you can do better? https://trumple.vercel.app",
+              "Trumple got me. Sad! Very unfair. Think you can do better? https://trumple.vercel.app",
+              "I lost Trumple today. A disaster the likes of which we've never seen. Think you can do better? https://trumple.vercel.app",
+              "Trumple defeated me. Many people are saying its rigged. https://trumple.vercel.app",
+              "I lost Trumple today. Nobody thought it could happen. Think you can do better? https://trumple.vercel.app",
+              "Trumple beat me. Sad! Very sad. Think you can do better? https://trumple.vercel.app",
+            ];
+            const msg = LOSER_MSGS[Math.floor(Math.random() * LOSER_MSGS.length)];
             if (navigator.share) {
               try { await navigator.share({ text: msg }); return; } catch (_) {}
             }
