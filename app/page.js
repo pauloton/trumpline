@@ -524,6 +524,20 @@ function GameOverScreen({ events, onViewChain, onMount }) {
           See The Right Timeline
         </button>
 
+        {/* Share your horrible score */}
+        <button
+          onClick={async () => {
+            const msg = "I failed Trumple today. Can you do better? https://trumple.vercel.app";
+            if (navigator.share) {
+              try { await navigator.share({ text: msg }); return; } catch (_) {}
+            }
+            try { await navigator.clipboard.writeText(msg); alert("Copied to clipboard!"); } catch (_) {}
+          }}
+          style={{ background:"#1a1f2e", border:"1.5px solid rgba(255,255,255,0.15)", borderRadius:"14px", padding:"0.85rem 2rem", color:C.text, fontFamily:"'Space Grotesk', sans-serif", fontSize:"1rem", fontWeight:700, cursor:"pointer", letterSpacing:"0.01em", marginTop:"0.6rem", width:"100%", display:"flex", alignItems:"center", justifyContent:"center", gap:"0.5rem" }}>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          Share Your Horrible Score
+        </button>
+
         {/* Try Again Tomorrow */}
         <div style={{ marginTop:"0.75rem", fontFamily:"'JetBrains Mono', monospace", fontSize:"0.75rem", color:C.dimmer, letterSpacing:"0.06em", textAlign:"center" }}>
           TRY AGAIN TOMORROW
@@ -532,7 +546,7 @@ function GameOverScreen({ events, onViewChain, onMount }) {
     </div>
   );
 }
-function PlayingScreen({ events, lockedCorrect, wrongCards, onReorder, onLockIn, timeDisplay, failedAttempts=0, isReadOnly=false, onBackToResults }) {
+function PlayingScreen({ events, lockedCorrect, wrongCards, onReorder, onLockIn, timeDisplay, failedAttempts=0, isReadOnly=false, onBackToResults, backLabel="Back to Score" }) {
   const allCorrect = events.length > 0 && events.every(ev => lockedCorrect[ev.id]);
   const lockedCount = Object.keys(lockedCorrect).length;
 
@@ -540,8 +554,8 @@ function PlayingScreen({ events, lockedCorrect, wrongCards, onReorder, onLockIn,
     return (
       <div style={{ width:"100%", maxWidth:"440px", margin:"0 auto", padding:"1rem 0.75rem", height:"100dvh", display:"flex", flexDirection:"column", overflow:"hidden" }}>
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0, marginBottom:"0.75rem" }}>
-          <button onClick={onBackToResults} style={{ background:"transparent", border:"none", color:C.dim, cursor:"pointer", fontFamily:"'DM Sans', sans-serif", fontSize:"0.85rem" }}>&#8592; Back to Score</button>
-          <div style={{ fontSize:"0.68rem", color:C.dimmer, fontFamily:"'JetBrains Mono', monospace", textTransform:"uppercase", letterSpacing:"0.05em" }}>Correct Order</div>
+          <button onClick={onBackToResults} style={{ background:"transparent", border:"none", color:C.dim, cursor:"pointer", fontFamily:"'DM Sans', sans-serif", fontSize:"0.85rem" }}>&#8592; {backLabel}</button>
+          <div/>
         </div>
         <div style={{ display:"flex", flexDirection:"column", gap:"clamp(0.25rem,1vh,0.55rem)", flex:1, minHeight:0 }}>
           {events.map(event => (
@@ -730,6 +744,7 @@ export default function TrumpleApp() {
   const [wrongCards, setWrongCards]     = useState({});
   const confettiShown = useRef(false);
   const gameOverShown = useRef(false);
+  const chainViewSource = useRef(null);
   const timer = useTimer();
 
   useEffect(() => {
@@ -797,9 +812,9 @@ export default function TrumpleApp() {
       {screen === SCREENS.INTRO      && puzzle && <IntroScreen puzzle={puzzle} onStart={handleStart}/>}
       {screen === SCREENS.REVEAL     && <RevealScreen events={revealEvents} onRevealComplete={handleRevealComplete}/>}
       {screen === SCREENS.PLAYING    && <PlayingScreen events={events} lockedCorrect={lockedCorrect} wrongCards={wrongCards} onReorder={handleReorder} onLockIn={handleLockIn} timeDisplay={formatTime(timer.time).display} failedAttempts={failedAttempts}/>}
-      {screen === SCREENS.CHAIN_VIEW && <PlayingScreen events={events} lockedCorrect={lockedCorrect} wrongCards={{}} onReorder={()=>{}} onLockIn={()=>{}} timeDisplay="" isReadOnly={true} onBackToResults={() => setScreen(SCREENS.COMPLETE)}/>}
-      {screen === SCREENS.COMPLETE   && <CompleteScreen time={timer.time} failedAttempts={failedAttempts} onViewChain={() => setScreen(SCREENS.CHAIN_VIEW)} firstVisit={!confettiShown.current} onMount={() => { confettiShown.current = true; }}/>}
-      {screen === SCREENS.GAME_OVER  && <GameOverScreen events={events} onViewChain={() => setScreen(SCREENS.CHAIN_VIEW)} onMount={() => { gameOverShown.current = true; }}/>}
+      {screen === SCREENS.CHAIN_VIEW && <PlayingScreen events={events} lockedCorrect={lockedCorrect} wrongCards={{}} onReorder={()=>{}} onLockIn={()=>{}} timeDisplay="" isReadOnly={true} onBackToResults={() => setScreen(chainViewSource.current === "game_over" ? SCREENS.GAME_OVER : SCREENS.COMPLETE)} backLabel={chainViewSource.current === "game_over" ? "Game Over" : "Back to Score"}/>}
+      {screen === SCREENS.COMPLETE   && <CompleteScreen time={timer.time} failedAttempts={failedAttempts} onViewChain={() => { chainViewSource.current = "complete"; setScreen(SCREENS.CHAIN_VIEW); }} firstVisit={!confettiShown.current} onMount={() => { confettiShown.current = true; }}/>}
+      {screen === SCREENS.GAME_OVER  && <GameOverScreen events={events} onViewChain={() => { chainViewSource.current = "game_over"; setScreen(SCREENS.CHAIN_VIEW); }} onMount={() => { gameOverShown.current = true; }}/>}
     </div>
   );
 }
