@@ -266,9 +266,9 @@ function IntroScreen({ onStart, puzzle }) {
     weekday:"long", month:"long", day:"numeric", year:"numeric"
   });
   const taglines = [
-    { text:"Seven Trump Events", size:"1.05rem", weight:600, color:C.dim },
-    { text:"Sort Them",          size:"1.05rem", weight:600, color:C.dim },
-    { text:"Beat The Clock",     size:"1.05rem", weight:600, color:C.dim },
+    { text:"The Chaos Never Ends!", size:"1.05rem", weight:600, color:C.dim },
+    { text:"Think You Can Sort It?", size:"1.05rem", weight:600, color:C.dim },
+    { text:"Beat The Clock",         size:"1.05rem", weight:600, color:C.dim },
   ];
 
   return (
@@ -742,7 +742,7 @@ function CompleteScreen({ time, failedAttempts, onViewChain, firstVisit, onMount
         </div>
         <button onClick={onViewChain} style={{ marginTop:"0.75rem", background:"transparent", border:"1px solid "+C.border, borderRadius:"10px", padding:"0.5rem 1.25rem", color:C.dim, fontFamily:"'DM Sans', sans-serif", fontSize:"0.8rem", cursor:"pointer", display:"flex", alignItems:"center", gap:"0.4rem" }}>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-          View the BEAUTIFUL Trump Timeline
+          View the "BEAUTIFUL" Trump Timeline
         </button>
         <div style={{ fontSize:"0.95rem", fontWeight:700, color:C.text, fontFamily:"'Space Grotesk', sans-serif", marginTop:"1.5rem", marginBottom:"0.6rem" }}>{shareCta}</div>
         <ShareIcons time={time}/>
