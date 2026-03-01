@@ -48,14 +48,16 @@ function getStars(failedAttempts) {
 const MAX_ATTEMPTS = 3; // game over after this many failed lock-ins
 
 function getStats() {
-  if (typeof window === "undefined") return { played: 0, perfects: 0, best: null };
+  if (typeof window === "undefined") return { played: 0, perfects: 0, best: null, history: [] };
   try {
+    const history = JSON.parse(localStorage.getItem("trumple_history") || "[]");
     return {
       played:   parseInt(localStorage.getItem("trumple_played")   || "0", 10),
       perfects: parseInt(localStorage.getItem("trumple_perfects") || "0", 10),
       best:     parseInt(localStorage.getItem("trumple_best")     || "0", 10) || null,
+      history,
     };
-  } catch { return { played: 0, perfects: 0, best: null }; }
+  } catch { return { played: 0, perfects: 0, best: null, history: [] }; }
 }
 function saveStats(timeMs, stars) {
   if (typeof window === "undefined") return;
@@ -64,6 +66,10 @@ function saveStats(timeMs, stars) {
     localStorage.setItem("trumple_played",   String(prev.played + 1));
     localStorage.setItem("trumple_perfects", String(prev.perfects + (stars === 3 ? 1 : 0)));
     if (timeMs && stars > 0 && (!prev.best || timeMs < prev.best)) localStorage.setItem("trumple_best", String(timeMs));
+    if (timeMs) {
+      const history = [...prev.history, timeMs].slice(-5);
+      localStorage.setItem("trumple_history", JSON.stringify(history));
+    }
   } catch {}
 }
 
@@ -740,6 +746,37 @@ function CompleteScreen({ time, failedAttempts, onViewChain, firstVisit, onMount
             </div>
           ))}
         </div>
+        {stats.history && stats.history.length > 0 && (() => {
+          const allTimes = stats.best ? [...stats.history, stats.best] : stats.history;
+          const minTime = Math.min(...allTimes);
+          const history = [...stats.history].reverse();
+          return (
+            <div style={{ width:"100%", marginTop:"1.25rem" }}>
+              <div style={{ fontSize:"0.6rem", color:C.dimmer, fontFamily:"'JetBrains Mono', monospace", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:"0.6rem" }}>YOUR LAST 5</div>
+              {history.map((t, i) => {
+                const pct = maxTime > 0 ? (minTime / t) * 100 : 100;
+                const isCurrent = i === 0 && history.length === stats.history.length;
+                return (
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:"0.5rem", marginBottom:"0.35rem" }}>
+                    <div style={{ width:"1rem", fontSize:"0.6rem", color:C.dimmer, fontFamily:"'JetBrains Mono', monospace", textAlign:"right", flexShrink:0 }}>{history.length - i}</div>
+                    <div style={{ flex:1, background:C.card, borderRadius:"6px", height:"2rem", position:"relative", overflow:"hidden" }}>
+                      <div style={{ position:"absolute", left:0, top:0, height:"100%", width:pct+"%", background: isCurrent ? C.gold : "rgba(255,255,255,0.12)", borderRadius:"6px", transition:"width 0.6s ease" }}/>
+                      <div style={{ position:"absolute", right:"0.6rem", top:"50%", transform:"translateY(-50%)", fontSize:"0.75rem", fontWeight:700, fontFamily:"'JetBrains Mono', monospace", color: C.text }}>{formatTime(t).display}</div>
+                    </div>
+                  </div>
+                );
+              })}
+              {stats.best && (
+                <div style={{ display:"flex", alignItems:"center", gap:"0.5rem", marginTop:"0.5rem" }}>
+                  <div style={{ width:"1rem", fontSize:"0.6rem", color:C.gold, fontFamily:"'JetBrains Mono', monospace", textAlign:"right", flexShrink:0 }}>★</div>
+                  <div style={{ flex:1, background:C.gold, borderRadius:"6px", height:"2rem", position:"relative", overflow:"hidden" }}>
+                    <div style={{ position:"absolute", right:"0.6rem", top:"50%", transform:"translateY(-50%)", fontSize:"0.75rem", fontWeight:700, fontFamily:"'JetBrains Mono', monospace", color:"#1a1a2e" }}>{formatTime(stats.best).display}&nbsp;&nbsp;BEST</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })()}
         <button onClick={onViewChain} style={{ marginTop:"0.75rem", background:"transparent", border:"1px solid "+C.border, borderRadius:"10px", padding:"0.5rem 1.25rem", color:C.dim, fontFamily:"'DM Sans', sans-serif", fontSize:"0.8rem", cursor:"pointer", display:"flex", alignItems:"center", gap:"0.4rem" }}>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
           View the "BEAUTIFUL" Trump Timeline
